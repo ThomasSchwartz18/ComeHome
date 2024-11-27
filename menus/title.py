@@ -78,6 +78,9 @@ class Title(arcade.View):
         except FileNotFoundError:
             self.total_coins_collected = 0
 
+        # Load leaderboard scores
+        self.load_scores()
+
         # Start background music
         self.play_background_music()
 
@@ -163,6 +166,7 @@ class Title(arcade.View):
                 anchor_x="center",
             )
 
+
         # Draw total coins collected with animated coin
         coin_x = SCREEN_WIDTH / 15
         coin_y = SCREEN_HEIGHT - 45
@@ -214,3 +218,17 @@ class Title(arcade.View):
 
             # Transition to the game view
             self.window.show_view(game_view)
+    
+    def load_scores(self):
+        """Load the leaderboard scores from a file."""
+        try:
+            with open("game_watcher/scores.txt", "r") as file:
+                self.leaderboard = [int(line.strip()) for line in file.readlines()]
+            self.leaderboard = self.leaderboard[:3]  # Only show the top 5 scores
+        except FileNotFoundError:
+            self.leaderboard = []  # No scores available
+            print("No scores file found. Starting fresh leaderboard.")
+        except Exception as e:
+            self.leaderboard = []
+            print(f"Error loading leaderboard scores: {e}")
+
