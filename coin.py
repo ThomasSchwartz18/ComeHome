@@ -1,52 +1,29 @@
-import arcade
 import math
+from utils import AnimatedSprite
 
-class Coin(arcade.Sprite):
+class Coin(AnimatedSprite):
     def __init__(self, x, y):
-        super().__init__()
-
-        # Animation textures
-        self.textures = []
-        sprite_sheet_path = "assets/coin.png"  # Sprite sheet for the coin
-        frame_width = 32
-        frame_height = 32
-        frame_count = 5  # Assuming 5 frames in the coin sprite sheet
-
-        # Load frames from the sprite sheet
-        for i in range(frame_count):
-            x_frame = i * frame_width
-            texture = arcade.load_texture(
-                sprite_sheet_path,
-                x=x_frame,
-                y=0,
-                width=frame_width,
-                height=frame_height
-            )
-            self.textures.append(texture)
-
-        # Set the first texture
-        self.texture = self.textures[0]
-        self.current_frame = 0
-        self.time_since_last_frame = 0
-        self.frame_duration = 0.1  # Seconds per frame
+        # Initialize the AnimatedSprite with the coin sprite sheet
+        super().__init__(
+            sprite_sheet_path="assets/coin.png",
+            frame_width=32,
+            frame_height=32,
+            frame_count=5,
+            scale=1.0,
+            frame_duration=0.5  # Animation frame duration
+        )
 
         # Set position and movement
         self.center_x = x
         self.center_y = y
         self.change_x = -5  # Move left
         self.gravitating = False  # Whether the coin is gravitating towards the player
-        self.scale = 1.0  # Initial scale
-
-    def update_animation(self, delta_time):
-        """Update the coin animation."""
-        self.time_since_last_frame += delta_time
-        if self.time_since_last_frame > self.frame_duration:
-            self.time_since_last_frame = 0
-            self.current_frame = (self.current_frame + 1) % len(self.textures)
-            self.texture = self.textures[self.current_frame]
 
     def update(self, delta_time, player):
         """Move the coin and gravitate towards the player if close enough."""
+        # Update the animation
+        self.update_animation(delta_time)
+
         # Move normally to the left
         if not self.gravitating:
             self.center_x += self.change_x

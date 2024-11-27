@@ -1,14 +1,15 @@
 import arcade
-from menus.title import Title
 from loading_screen import LoadingScreen
+
+class GetOutGame(arcade.Window):
+    def __init__(self):
+        super().__init__(800, 600, "ComeHome")
+        self.loading_screen = LoadingScreen()
+        self.show_view(self.loading_screen)  # Show the loading screen immediately
 
 def main():
     # Create the main application window
-    window = arcade.Window(800, 600, "GetOut")
-    loading_screen = LoadingScreen()
-    window.show_view(loading_screen)  # Start with the loading screen
-    title_view = Title()
-    window.show_view(title_view)  # Show the title menu
+    window = GetOutGame()
     arcade.run()
 
 if __name__ == "__main__":
