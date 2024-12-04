@@ -43,6 +43,11 @@ class GameWindow(arcade.View):
 
         # Background sound
         self.background_sound = None
+        
+        # Initialize the wind sound timer and interval
+        self.wind_sound_timer = 0
+        self.next_wind_interval = random.uniform(10, 25)  # 10 to 25 seconds
+        self.wind_sound = None
 
         # Running sound
         self.running_sound = None
@@ -72,6 +77,7 @@ class GameWindow(arcade.View):
             
         # Play the background sound
         self.play_background_sound()
+        self.play_wind_sound()
         
         # Schedule level dialogue to play with a delay
         arcade.schedule(self.delayed_play_level_dialogue, 1.0)  # 1-second delay
@@ -95,22 +101,48 @@ class GameWindow(arcade.View):
             # Cancel further scheduling of this method
             arcade.unschedule(self.delayed_play_level_dialogue)
             
-    def play_level_dialogue(self):
-        """Play the dialogue sound for the level."""
-        try:
-            self.level_dialogue = arcade.Sound("assets/sounds/character/dialogue/Level1_1.mp3")
-            self.level_dialogue.play()
-            # print("Level dialogue started.")
-        except Exception as e:
-            print(f"Error playing level dialogue: {e}")
-        
     def play_background_sound(self):
-        """Play and loop the background sound."""
+        """Play and loop the background sound and periodically play wind sound."""
         try:
+            # Play and loop the forest background sound
             self.background_sound = arcade.Sound("assets/sounds/background/forest_noises.mp3")
             self.background_sound.play(loop=True)
         except Exception as e:
             print(f"Error playing background sound: {e}")
+
+        # Ensure the wind sound is loaded
+        try:
+            self.wind_sound = arcade.Sound("assets/sounds/background/wind.mp3")
+            self.wind_sound_player = None  # To track if wind sound is playing
+        except Exception as e:
+            print(f"Error loading wind sound: {e}")
+            self.wind_sound = None
+
+    # Schedule wind sound playback
+    def play_wind_sound(self):
+        """Periodically play the wind sound at random intervals."""
+        try:
+            self.wind_sound = arcade.Sound("assets/sounds/background/wind.mp3")
+        except Exception as e:
+            print(f"Error loading wind sound: {e}")
+            self.wind_sound = None
+
+        def play_wind(delta_time):
+            if self.wind_sound is not None:
+                try:
+                    # Play the wind sound
+                    self.wind_sound.play()
+                except Exception as e:
+                    print(f"Error playing wind sound: {e}")
+
+            # Schedule the next wind sound after a random interval
+            next_interval = random.uniform(25, 45)
+            arcade.schedule(play_wind, next_interval)
+
+        # Initial scheduling
+        arcade.schedule(play_wind, random.uniform(10, 25))
+
+
 
 
     ################################################################################################
