@@ -48,6 +48,7 @@ class GameWindow(arcade.View):
         self.wind_sound_timer = 0
         self.next_wind_interval = random.uniform(10, 25)  # 10 to 25 seconds
         self.wind_sound = None
+        self.wind_sound_playing = False
 
         # Running sound
         self.running_sound = None
@@ -118,32 +119,41 @@ class GameWindow(arcade.View):
             print(f"Error loading wind sound: {e}")
             self.wind_sound = None
 
-    # Schedule wind sound playback
+    # Schedule wind sound playbackdef play_wind_sound(self):
     def play_wind_sound(self):
         """Periodically play the wind sound at random intervals."""
         try:
+            # Ensure the wind sound is loaded
             self.wind_sound = arcade.Sound("assets/sounds/background/wind.mp3")
         except Exception as e:
             print(f"Error loading wind sound: {e}")
             self.wind_sound = None
 
         def play_wind(delta_time):
-            if self.wind_sound is not None:
+            """Play the wind sound if it's not already playing."""
+            if not self.wind_sound_playing and self.wind_sound is not None:
                 try:
-                    # Play the wind sound
+                    print("Wind sound starting...")
                     self.wind_sound.play()
+                    self.wind_sound_playing = True
+                    # Schedule flag reset after sound duration
+                    sound_duration = self.wind_sound.get_length()
+                    arcade.schedule(reset_wind_sound_flag, sound_duration)
                 except Exception as e:
                     print(f"Error playing wind sound: {e}")
 
             # Schedule the next wind sound after a random interval
-            next_interval = random.uniform(25, 45)
+            next_interval = random.uniform(10, 25)
             arcade.schedule(play_wind, next_interval)
+
+        def reset_wind_sound_flag(delta_time):
+            """Reset the wind sound playing flag."""
+            print("Wind sound stopping...")
+            self.wind_sound_playing = False
+            arcade.unschedule(reset_wind_sound_flag)
 
         # Initial scheduling
         arcade.schedule(play_wind, random.uniform(10, 25))
-
-
-
 
     ################################################################################################
     # Rendering
