@@ -140,6 +140,15 @@ class Title(arcade.View):
             anchor_y="center",
         )
         
+        # Draw leaderboard title
+        arcade.draw_text(
+            "Leaderboard:",
+            SCREEN_WIDTH / 2,
+            SCREEN_HEIGHT / 2 + 250,
+            GAME_RED,
+            font_size=35,
+            anchor_x="center",
+        )
         for i, score in enumerate(self.leaderboard):
             arcade.draw_text(
                 f"{i + 1}....{score}",

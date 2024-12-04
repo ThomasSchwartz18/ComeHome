@@ -19,8 +19,10 @@ class GameWindow(arcade.View):
 
         # Initialize the score
         self.score = 0
-        self.running_speed = 200  # Player's running speed in pixels per second
+        self.running_speed = 200  # Player's initial running speed in pixels per second
         self.pixels_to_meters = 0.1  # Conversion factor: 10 pixels = 1 meter
+        self.speed_increase_rate = 1  # Pixels per second increase every second
+        self.max_running_speed = 5000  # Optional: Maximum running speed
 
         # Initialize scores
         self.scores = []
@@ -163,6 +165,11 @@ class GameWindow(arcade.View):
             self.save_total_coins()  # Save total coins collected
             return
         
+        # Gradually increase the running speed
+        self.running_speed += self.speed_increase_rate * delta_time
+        if self.running_speed > self.max_running_speed:
+            self.running_speed = self.max_running_speed  # Cap the running speed
+        
         # Update the distance score
         self.score += self.running_speed * delta_time * self.pixels_to_meters
 
@@ -205,9 +212,10 @@ class GameWindow(arcade.View):
 
         # Update game objects
         self.player.update()
-        self.obstacles.update()
+        for obstacle in self.obstacles:
+            obstacle.update(self.running_speed)
         for coin in self.coins:
-            coin.update(delta_time, self.player)
+            coin.update(delta_time, self.player, self.running_speed)
         self.lightning_bugs.update()
 
         # Update animations for obstacles and bugs
@@ -243,14 +251,20 @@ class GameWindow(arcade.View):
     def on_key_press(self, key, modifiers):
         """Handle key presses."""
         if key == arcade.key.SPACE:
-            self.jump_audio = arcade.Sound('assets/sounds/game_sounds/jump.mp3')
-            self.jump_audio.play()
             self.player.jump()
         elif key == arcade.key.ESCAPE:
+            # Stop the running sound when opening the pause menu
+            if self.running_sound_playing and self.running_sound_player:
+                try:
+                    self.running_sound.stop(self.running_sound_player)
+                    self.running_sound_player = None
+                    self.running_sound_playing = False
+                except Exception as e:
+                    print(f"Error stopping running sound when pausing: {e}")
+
             from menus.pause import Pause
             pause_menu = Pause(self)
             self.window.show_view(pause_menu)
-
     ################################################################################################
     # Spawning World Assets
     ################################################################################################
@@ -262,7 +276,7 @@ class GameWindow(arcade.View):
     def spawn_coin(self):
         """Spawn a coin at a random position."""
         x = SCREEN_WIDTH  # Spawn at the right edge of the screen
-        y = GROUND_HEIGHT + random.randint(20, 50)  # Spawn near the ground with slight variation
+        y = GROUND_HEIGHT + random.randint(20, 100)  # Spawn near the ground with slight variation
         coin = Coin(x, y)
         self.coins.append(coin)
         
@@ -371,14 +385,20 @@ class GameWindow(arcade.View):
                 self.coins.remove(coin)
 
     def spawn_periodic_objects(self, delta_time):
-        """Spawn obstacles and coins periodically."""
+        """Spawn obstacles and coins periodically based on running speed."""
+        # Adjust spawn intervals based on running speed
+        adjusted_obstacle_spawn_rate = OBSTACLE_SPAWN_RATE / (self.running_speed / 200)
+        adjusted_coin_spawn_rate = 1.0 / (self.running_speed / 200)  # Adjust as needed
+
+        # Spawn obstacles periodically
         self.time_since_last_obstacle += delta_time
-        if self.time_since_last_obstacle > OBSTACLE_SPAWN_RATE:
+        if self.time_since_last_obstacle > adjusted_obstacle_spawn_rate:
             self.time_since_last_obstacle = 0
             self.spawn_obstacle()
 
+        # Spawn coins periodically
         self.time_since_last_coin += delta_time
-        if self.time_since_last_coin > 2.0:  # Adjust spawn rate as needed
+        if self.time_since_last_coin > adjusted_coin_spawn_rate:
             self.time_since_last_coin = 0
             self.spawn_coin()
 

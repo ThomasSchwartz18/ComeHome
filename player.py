@@ -38,6 +38,10 @@ class Player(arcade.Sprite):
         self.change_y = 0
         self.change_x = 0
 
+        # Jumping state
+        self.jumps_left = 2  # Allow double jumps
+        self.jump_speed = PLAYER_JUMP_SPEED
+
         # Load the running sound
         self.running_sound = arcade.Sound("assets/sounds/character/running.wav")
         self.running_sound_playing = False  # Track if the sound is already playing
@@ -92,11 +96,15 @@ class Player(arcade.Sprite):
         if self.center_y < GROUND_HEIGHT:
             self.center_y = GROUND_HEIGHT
             self.change_y = 0
+            self.jumps_left = 2  # Reset jumps when the player lands
 
     def jump(self):
-        """Make the player jump if on the ground."""
-        if self.center_y == GROUND_HEIGHT:
-            self.change_y = PLAYER_JUMP_SPEED
+        """Make the player jump if jumps are available."""
+        if self.jumps_left > 0:
+            self.jump_audio = arcade.Sound('assets/sounds/game_sounds/jump.mp3')
+            self.jump_audio.play()
+            self.change_y = self.jump_speed
+            self.jumps_left -= 1  # Use a jump
 
     def update_animation(self, delta_time):
         """Update the animation based on elapsed time."""

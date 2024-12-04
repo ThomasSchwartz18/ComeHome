@@ -108,7 +108,7 @@ class GameOver(arcade.View):
                         arcade.color.RED_ORANGE, font_size=25, anchor_x="left")
 
         # Display restart instructions
-        arcade.draw_text("Press ENTER to Restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150,
+        arcade.draw_text("Press ENTER to return home", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150,
                          arcade.color.LIGHT_GRAY, font_size=20, anchor_x="center")
 
     def on_update(self, delta_time):

@@ -22,6 +22,10 @@ class Obstacle(arcade.Sprite):
                 height=frame_height
             )
             self.textures.append(texture)
+            
+        # Initial speed
+        self.initial_speed = -5  # Obstacles start at -5 speed
+        self.change_x = self.initial_speed  # Set the starting speed
 
         # Set the first texture
         self.texture = self.textures[0]
@@ -32,7 +36,6 @@ class Obstacle(arcade.Sprite):
         # Set position
         self.center_x = x
         self.center_y = y
-        self.change_x = -5  # Move left
 
     def update_animation(self, delta_time):
         """Update the obstacle animation."""
@@ -42,6 +45,12 @@ class Obstacle(arcade.Sprite):
             self.current_frame = (self.current_frame + 1) % len(self.textures)
             self.texture = self.textures[self.current_frame]
 
-    def update(self):
-        """Move the obstacle."""
-        self.center_x += self.change_x
+    def update(self, running_speed):
+        """Move the obstacle based on the current running speed."""
+        # Update speed dynamically based on the running speed of the player
+        self.change_x = self.initial_speed - (running_speed / 100)  # Adjust speed proportionally
+        
+        self.center_x += self.change_x  # Update position
+
+        # Update animation
+        self.update_animation(1 / 60)  # Assuming 60 FPS

@@ -12,22 +12,26 @@ class Coin(AnimatedSprite):
             scale=0.5,
             frame_duration=0.5  # Animation frame duration
         )
+        
+        # Initial speed
+        self.initial_speed = -5  # Coins start at -5 speed
+        self.change_x = self.initial_speed  # Set the starting speed
 
         # Set position and movement
         self.center_x = x
         self.center_y = y
-        self.change_x = -5  # Move left
         self.gravitating = False  # Whether the coin is gravitating towards the player
 
-    def update(self, delta_time, player):
+    def update(self, delta_time, player, running_speed):
         """Move the coin and gravitate towards the player if close enough."""
         # Update the animation
         self.update_animation(delta_time)
 
-        # Move normally to the left
         if not self.gravitating:
+            # Update speed dynamically based on the running speed of the player
+            self.change_x = self.initial_speed - (running_speed / 100)  # Adjust speed proportionally
             self.center_x += self.change_x
-
+            
         # Check distance to the player
         distance_to_player = math.sqrt((self.center_x - player.center_x) ** 2 + (self.center_y - player.center_y) ** 2)
         if distance_to_player < 100:  # Adjust the distance threshold as needed
