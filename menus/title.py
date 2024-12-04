@@ -2,7 +2,7 @@ import arcade
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_RED
 from utils import draw_parallax_background
 import time
-
+import random
 
 class Title(arcade.View):
     def __init__(self):
@@ -34,9 +34,18 @@ class Title(arcade.View):
         self.background_music = None
         self.music_playing = False
         self.music_start_time = None
+        
+        # Mouse position
+        self.mouse_x = 0
+        self.mouse_y = 0
 
         # Load the coin animation frames
         self.load_coin_animation()
+        
+    def on_mouse_motion(self, x, y, dx, dy):
+        """Track mouse movement."""
+        self.mouse_x = x
+        self.mouse_y = y
 
     def load_coin_animation(self):
         """Load the coin animation frames."""
@@ -81,32 +90,6 @@ class Title(arcade.View):
         # Load leaderboard scores
         self.load_scores()
 
-        # Start background music
-        self.play_background_music()
-
-    def play_background_music(self):
-        """Play and loop the background music with fade-in effect."""
-        try:
-            if not self.music_playing:
-                print("Starting background music with fade-in.")
-                self.background_music = arcade.Sound("assets/sounds/background/GuitarStrum.mp3")
-                self.music_start_time = time.time()
-                self.background_music_player = self.background_music.play(volume=0.0, loop=True)  # Store playback instance
-                self.music_playing = True
-        except Exception as e:
-            print(f"Error playing background music: {e}")
-
-
-    def stop_background_music(self):
-        """Stop the background music."""
-        if self.music_playing and self.background_music:
-            print("Stopping background music.")
-            try:
-                self.background_music.stop()
-            except Exception as e:
-                print(f"Error stopping background music: {e}")
-            self.music_playing = False
-
     def on_draw(self):
         """Render the title screen."""
         self.clear()
@@ -128,17 +111,27 @@ class Title(arcade.View):
             SCREEN_HEIGHT,  # Height of the window
             self.title_image,
         )
+        
+        # Check if the mouse is hovering over the Freeplay button
+        is_hovering = (
+            self.button_center_x - self.button_width / 2 < self.mouse_x < self.button_center_x + self.button_width / 2 and
+            self.button_center_y - self.button_height / 2 < self.mouse_y < self.button_center_y + self.button_height / 2
+        )
 
-        # Draw Start Button
+        # Set button color based on hover state
+        button_color = arcade.color.DARK_RED if is_hovering else GAME_RED
+
+        # Draw Freeplay Button
         arcade.draw_rectangle_filled(
             self.button_center_x,
             self.button_center_y,
             self.button_width,
             self.button_height,
-            GAME_RED,
+            button_color,
         )
+        
         arcade.draw_text(
-            "START",
+            "Freeplay",
             self.button_center_x,
             self.button_center_y,
             arcade.color.BLACK,
@@ -146,16 +139,7 @@ class Title(arcade.View):
             anchor_x="center",
             anchor_y="center",
         )
-
-        # Draw leaderboard
-        arcade.draw_text(
-            "High Scores:",
-            SCREEN_WIDTH / 2,
-            SCREEN_HEIGHT / 2 + 250,
-            GAME_RED,
-            font_size=35,
-            anchor_x="center",
-        )
+        
         for i, score in enumerate(self.leaderboard):
             arcade.draw_text(
                 f"{i + 1}....{score}",
@@ -193,18 +177,6 @@ class Title(arcade.View):
             self.coin_frame_time = 0
             self.coin_frame_index = (self.coin_frame_index + 1) % len(self.coin_textures)
 
-        # Handle music fade-in and fade-out every 30 seconds
-        if self.music_playing and self.music_start_time:
-            elapsed = time.time() - self.music_start_time
-            if elapsed < 5:  # Fade in during the first 5 seconds
-                volume = elapsed / 5
-                self.background_music_player.volume = volume  # Set volume using playback instance
-            elif 25 < elapsed < 30:  # Fade out during the last 5 seconds
-                volume = (30 - elapsed) / 5
-                self.background_music_player.volume = volume  # Set volume using playback instance
-            elif elapsed >= 30:  # Restart the cycle
-                self.music_start_time = time.time()
-
     def on_mouse_press(self, x, y, button, modifiers):
         """Handle mouse click for the start button."""
         if self.button_center_x - self.button_width / 2 < x < self.button_center_x + self.button_width / 2 and \
@@ -212,9 +184,6 @@ class Title(arcade.View):
             from game_window import GameWindow
             game_view = GameWindow()
             game_view.setup()
-
-            # Stop the background music before transitioning
-            self.stop_background_music()
 
             # Transition to the game view
             self.window.show_view(game_view)

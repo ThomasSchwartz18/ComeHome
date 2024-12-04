@@ -1,6 +1,6 @@
 import arcade
 import os
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_RED
 from utils import draw_parallax_background
 
 class GameOver(arcade.View):
@@ -94,7 +94,8 @@ class GameOver(arcade.View):
         )
 
         # Display final score
-        arcade.draw_text(f"Final Score: {self.final_score}", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 250,
+        rounded_final_score = round(self.final_score)
+        arcade.draw_text(f"Final Score: {rounded_final_score}", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 250,
                          arcade.color.WHITE, font_size=30, anchor_x="center")
         
         # Draw total coins collected with animated coin
@@ -104,7 +105,7 @@ class GameOver(arcade.View):
             coin_x - 20, coin_y + 13, 32, 32, self.coin_textures[self.coin_frame_index]
         )
         arcade.draw_text(f"{self.total_coins_collected}", coin_x, coin_y,
-                        arcade.color.LIGHT_GREEN, font_size=25, anchor_x="left")
+                        arcade.color.RED_ORANGE, font_size=25, anchor_x="left")
 
         # Display restart instructions
         arcade.draw_text("Press ENTER to Restart", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 150,

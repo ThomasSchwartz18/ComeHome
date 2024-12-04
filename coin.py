@@ -9,7 +9,7 @@ class Coin(AnimatedSprite):
             frame_width=32,
             frame_height=32,
             frame_count=5,
-            scale=1.0,
+            scale=0.5,
             frame_duration=0.5  # Animation frame duration
         )
 

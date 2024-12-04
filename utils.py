@@ -1,4 +1,6 @@
 import arcade
+import random
+import time
 
 def draw_parallax_background(layers, offsets, speeds, screen_width, screen_height, delta_time=0):
     """Draw and optionally update a parallax background."""
@@ -44,3 +46,51 @@ class AnimatedSprite(arcade.Sprite):
             self.time_since_last_frame = 0
             self.current_frame = (self.current_frame + 1) % len(self.textures)
             self.texture = self.textures[self.current_frame]
+            
+class BackgroundMusicManager:
+    def __init__(self, music_file: str):
+        """Initialize the background music manager."""
+        self.music_file = music_file
+        self.background_music = None
+        self.background_music_player = None
+        self.music_playing = False
+        self.music_start_time = None
+
+    def play_music(self):
+        """Play the background music with fade-in."""
+        if not self.music_playing:
+            try:
+                self.background_music = arcade.Sound(self.music_file)
+                self.music_start_time = time.time()  # Use Python's time module
+                self.background_music_player = self.background_music.play(volume=0.0, loop=True)
+                self.music_playing = True
+            except Exception as e:
+                print(f"Error starting background music: {e}")
+
+    def update_volume(self, delta_time):
+        """Update the volume of the music for fade-in and fade-out effects."""
+        if self.music_playing and self.music_start_time:
+            elapsed = time.time() - self.music_start_time  # Calculate elapsed time
+            duration = self.background_music.get_length()
+
+            if elapsed < 5:  # Fade in during the first 5 seconds
+                self.background_music_player.volume = elapsed / 5
+            elif duration - 5 < elapsed < duration:  # Fade out during the last 5 seconds
+                self.background_music_player.volume = (duration - elapsed) / 5
+            elif elapsed >= duration:  # Loop with delay
+                self.stop_music()
+                arcade.schedule(self.replay_music, random.uniform(20, 40))
+
+    def replay_music(self, delta_time):
+        """Replay the music after a delay."""
+        arcade.unschedule(self.replay_music)
+        self.play_music()
+
+    def stop_music(self):
+        """Stop the background music."""
+        if self.music_playing:
+            try:
+                self.background_music_player.pause()
+                self.music_playing = False
+            except Exception as e:
+                print(f"Error stopping background music: {e}")
