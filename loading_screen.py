@@ -88,8 +88,12 @@ class LoadingScreen(arcade.View):
             arcade.load_texture("assets/background/Background2.png")
             arcade.load_texture("assets/background/Background3.png")
             arcade.load_texture("assets/background/Background4.png")
-            arcade.Sound("assets/sounds/background/forest_noises.mp3")
+            arcade.Sound("assets/sounds/background/forest_noises.wav")
+            arcade.Sound("assets/sounds/background/GuitarStrum.wav")
+            arcade.Sound("assets/sounds/background/wind.wav")
             arcade.Sound("assets/sounds/character/running.wav")
+            arcade.Sound("assets/sounds/game_sounds/coin_collection.wav")
+            arcade.Sound("assets/sounds/game_sounds/jump.wav")
             print("Assets loaded successfully.")
         except Exception as e:
             print(f"Error loading assets: {e}")

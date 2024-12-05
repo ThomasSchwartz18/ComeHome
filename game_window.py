@@ -93,7 +93,7 @@ class GameWindow(arcade.View):
     def delayed_play_level_dialogue(self, delta_time):
         """Play the dialogue sound after a delay."""
         try:
-            self.level_dialogue = arcade.Sound("assets/sounds/character/dialogue/Level1_1.mp3")
+            self.level_dialogue = arcade.Sound("assets/sounds/character/dialogue/Level1_1.wav")
             self.level_dialogue.play()
             # print("Level dialogue started.")
         except Exception as e:
@@ -106,14 +106,14 @@ class GameWindow(arcade.View):
         """Play and loop the background sound and periodically play wind sound."""
         try:
             # Play and loop the forest background sound
-            self.background_sound = arcade.Sound("assets/sounds/background/forest_noises.mp3")
+            self.background_sound = arcade.Sound("assets/sounds/background/forest_noises.wav")
             self.background_sound.play(loop=True)
         except Exception as e:
             print(f"Error playing background sound: {e}")
 
         # Ensure the wind sound is loaded
         try:
-            self.wind_sound = arcade.Sound("assets/sounds/background/wind.mp3")
+            self.wind_sound = arcade.Sound("assets/sounds/background/wind.wav")
             self.wind_sound_player = None  # To track if wind sound is playing
         except Exception as e:
             print(f"Error loading wind sound: {e}")
@@ -124,7 +124,7 @@ class GameWindow(arcade.View):
         """Periodically play the wind sound at random intervals."""
         try:
             # Ensure the wind sound is loaded
-            self.wind_sound = arcade.Sound("assets/sounds/background/wind.mp3")
+            self.wind_sound = arcade.Sound("assets/sounds/background/wind.wav")
         except Exception as e:
             print(f"Error loading wind sound: {e}")
             self.wind_sound = None
@@ -376,7 +376,7 @@ class GameWindow(arcade.View):
         # Handle coin collisions
         for coin in coins_collected:
             self.coins.remove(coin)  # Remove the coin from the sprite list
-            self.coin_collection = arcade.Sound('assets/sounds/game_sounds/coin_collection.mp3')
+            self.coin_collection = arcade.Sound('assets/sounds/game_sounds/coin_collection.wav')
             self.coin_collection.play() # Play the coin collection sound
             self.total_coins_collected += 1  # Update the total coins collected
             # print(f"Coin collected! Total coins: {self.total_coins_collected}")

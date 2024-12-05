@@ -10,7 +10,7 @@ class ComeHomeGame(arcade.Window):
         self.show_view(self.loading_screen)  # Show the loading screen immediately
 
         # Initialize the background music manager
-        self.music_manager = BackgroundMusicManager("assets/sounds/background/GuitarStrum.mp3")
+        self.music_manager = BackgroundMusicManager("assets/sounds/background/GuitarStrum.wav")
         self.music_manager.play_music()
 
     def on_update(self, delta_time):

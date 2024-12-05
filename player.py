@@ -101,7 +101,7 @@ class Player(arcade.Sprite):
     def jump(self):
         """Make the player jump if jumps are available."""
         if self.jumps_left > 0:
-            self.jump_audio = arcade.Sound('assets/sounds/game_sounds/jump.mp3')
+            self.jump_audio = arcade.Sound('assets/sounds/game_sounds/jump.wav')
             self.jump_audio.play()
             self.change_y = self.jump_speed
             self.jumps_left -= 1  # Use a jump
