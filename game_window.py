@@ -7,6 +7,7 @@ import random
 from coin import Coin
 import os
 from lightning_bug import LightningBug
+import pyglet
 
 
 class GameWindow(arcade.View):
@@ -62,7 +63,7 @@ class GameWindow(arcade.View):
     # Initialization and Setup
     ################################################################################################
     def setup(self):
-        """Setup the game and initialize objects."""
+        """Setup the game and initialize objects."""       
         # Initialize game objects
         self.ground = Ground()
         self.player = Player()
@@ -83,7 +84,6 @@ class GameWindow(arcade.View):
         # Schedule level dialogue to play with a delay
         arcade.schedule(self.delayed_play_level_dialogue, 1.0)  # 1-second delay
 
-
         # Load the running sound
         try:
             self.running_sound = arcade.Sound("assets/sounds/character/running.wav")
@@ -94,7 +94,7 @@ class GameWindow(arcade.View):
         """Play the dialogue sound after a delay."""
         try:
             self.level_dialogue = arcade.Sound("assets/sounds/character/dialogue/Level1_1.wav")
-            self.level_dialogue.play()
+            self.level_dialogue.play(volume=10)
             # print("Level dialogue started.")
         except Exception as e:
             print(f"Error playing level dialogue: {e}")
@@ -107,7 +107,7 @@ class GameWindow(arcade.View):
         try:
             # Play and loop the forest background sound
             self.background_sound = arcade.Sound("assets/sounds/background/forest_noises.wav")
-            self.background_sound.play(loop=True)
+            self.background_sound_player = self.background_sound.play(loop=True, volume=0.75)
         except Exception as e:
             print(f"Error playing background sound: {e}")
 
@@ -118,6 +118,7 @@ class GameWindow(arcade.View):
         except Exception as e:
             print(f"Error loading wind sound: {e}")
             self.wind_sound = None
+
 
     # Schedule wind sound playbackdef play_wind_sound(self):
     def play_wind_sound(self):
@@ -231,7 +232,7 @@ class GameWindow(arcade.View):
             if not self.running_sound_playing and self.running_sound:
                 # print("Player is on the ground. Starting running sound.")
                 try:
-                    self.running_sound_player = self.running_sound.play(loop=True)
+                    self.running_sound_player = self.running_sound.play(loop=True, volume=1.5)
                     self.running_sound_playing = True
                     # print("Running sound started.")
                 except Exception as e:
@@ -345,6 +346,15 @@ class GameWindow(arcade.View):
         if obstacles_hit:
             # print("Obstacle hit detected. Setting game over...")
             self.game_over = True
+            
+            # Stop the background sound if it's playing
+            if self.background_sound_player:
+                try:
+                    self.background_sound.stop(self.background_sound_player)
+                    self.background_sound_player = None  # Clear the player instance
+                    print("Background sound stopped due to game over.")
+                except Exception as e:
+                    print(f"Error stopping background sound: {e}")
 
             # Stop the running sound if it's playing
             if self.running_sound_playing and self.running_sound_player:
@@ -377,7 +387,7 @@ class GameWindow(arcade.View):
         for coin in coins_collected:
             self.coins.remove(coin)  # Remove the coin from the sprite list
             self.coin_collection = arcade.Sound('assets/sounds/game_sounds/coin_collection.wav')
-            self.coin_collection.play() # Play the coin collection sound
+            self.coin_collection.play(volume=0.75) # Play the coin collection sound
             self.total_coins_collected += 1  # Update the total coins collected
             # print(f"Coin collected! Total coins: {self.total_coins_collected}")
 
