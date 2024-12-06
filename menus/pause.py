@@ -1,5 +1,5 @@
 import arcade
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Pause(arcade.View):
     def __init__(self, game_view):

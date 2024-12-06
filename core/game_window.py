@@ -1,12 +1,12 @@
 import arcade
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, GROUND_HEIGHT, OBSTACLE_SPAWN_RATE, BUG_MAX_COUNT, BUG_MIN_COUNT, BUG_SCALE, BUG_SPEED
-from player import Player
-from obstacle import Obstacle
-from ground import Ground
+from utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, GROUND_HEIGHT, OBSTACLE_SPAWN_RATE, BUG_MAX_COUNT, BUG_MIN_COUNT, BUG_SCALE, BUG_SPEED
+from entities.player import Player
+from entities.obstacle import Obstacle
+from entities.ground import Ground
 import random
-from coin import Coin
+from entities.coin import Coin
 import os
-from lightning_bug import LightningBug
+from entities.lightning_bug import LightningBug
 import pyglet
 
 
@@ -74,7 +74,7 @@ class GameWindow(arcade.View):
 
         # Load background layers
         for i in range(1, 5):  # Load Background1.png to Background4.png
-            layer = arcade.load_texture(f"assets/background/Background{i}.png")
+            layer = arcade.load_texture(f"assets/images/background/Background{i}.png")
             self.background_layers.append(layer)
             
         # Play the background sound
@@ -86,15 +86,15 @@ class GameWindow(arcade.View):
 
         # Load the running sound
         try:
-            self.running_sound = arcade.Sound("assets/sounds/character/running.wav")
+            self.running_sound = arcade.Sound("assets/sounds/characters/running.wav")
         except Exception as e:
             print(f"Error loading running sound: {e}")
             
     def delayed_play_level_dialogue(self, delta_time):
         """Play the dialogue sound after a delay."""
         try:
-            self.level_dialogue = arcade.Sound("assets/sounds/character/dialogue/Level1_1.wav")
-            self.level_dialogue.play(volume=10)
+            self.level_dialogue = arcade.Sound("assets/sounds/characters/dialogue/Level1_1.wav")
+            self.level_dialogue.play(volume=2)
             # print("Level dialogue started.")
         except Exception as e:
             print(f"Error playing level dialogue: {e}")
@@ -107,7 +107,7 @@ class GameWindow(arcade.View):
         try:
             # Play and loop the forest background sound
             self.background_sound = arcade.Sound("assets/sounds/background/forest_noises.wav")
-            self.background_sound_player = self.background_sound.play(loop=True, volume=0.75)
+            self.background_sound_player = self.background_sound.play(loop=True, volume=1)
         except Exception as e:
             print(f"Error playing background sound: {e}")
 
@@ -232,7 +232,7 @@ class GameWindow(arcade.View):
             if not self.running_sound_playing and self.running_sound:
                 # print("Player is on the ground. Starting running sound.")
                 try:
-                    self.running_sound_player = self.running_sound.play(loop=True, volume=1.5)
+                    self.running_sound_player = self.running_sound.play(loop=True, volume=1)
                     self.running_sound_playing = True
                     # print("Running sound started.")
                 except Exception as e:

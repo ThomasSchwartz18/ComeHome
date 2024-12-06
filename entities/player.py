@@ -1,5 +1,5 @@
 import arcade
-from constants import PLAYER_START_X, PLAYER_START_Y, PLAYER_JUMP_SPEED, GROUND_HEIGHT, PLAYER_GRAVITY
+from utils.constants import PLAYER_START_X, PLAYER_START_Y, PLAYER_JUMP_SPEED, GROUND_HEIGHT, PLAYER_GRAVITY
 
 class Player(arcade.Sprite):
     def __init__(self):
@@ -19,10 +19,10 @@ class Player(arcade.Sprite):
         self.jumping_frame_height = 149  # Height of each jump frame
 
         # Load the running animation frames
-        self.load_running_textures("assets/run_side.png")
+        self.load_running_textures("assets/images/characters/run_side.png")
 
         # Load the jumping animation frames
-        self.load_jumping_textures("assets/jump.png")
+        self.load_jumping_textures("assets/images/characters/jump.png")
 
         # Set the initial texture
         self.texture = self.running_textures[0]  # Default to running animation
@@ -43,7 +43,7 @@ class Player(arcade.Sprite):
         self.jump_speed = PLAYER_JUMP_SPEED
 
         # Load the running sound
-        self.running_sound = arcade.Sound("assets/sounds/character/running.wav")
+        self.running_sound = arcade.Sound("assets/sounds/characters/running.wav")
         self.running_sound_playing = False  # Track if the sound is already playing
 
     def load_running_textures(self, sprite_sheet_path):

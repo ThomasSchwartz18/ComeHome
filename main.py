@@ -1,6 +1,6 @@
 import arcade
-from loading_screen import LoadingScreen
-from utils import BackgroundMusicManager
+from core.loading_screen import LoadingScreen
+from utils.util import BackgroundMusicManager
 
 class ComeHomeGame(arcade.Window):
     def __init__(self):
@@ -9,7 +9,7 @@ class ComeHomeGame(arcade.Window):
         # Set up custom cursor
         self.set_mouse_visible(False)
         try:
-            self.custom_cursor = arcade.Sprite("assets/game/cursor.png", scale=1.25)
+            self.custom_cursor = arcade.Sprite("assets/images/game/cursor.png", scale=1.25)
             self.cursor_width = self.custom_cursor.width
             self.cursor_height = self.custom_cursor.height
             print("Custom cursor loaded successfully.")

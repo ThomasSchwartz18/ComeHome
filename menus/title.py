@@ -1,6 +1,6 @@
 import arcade
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_RED
-from utils import draw_parallax_background
+from utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_RED
+from utils.util import draw_parallax_background
 import time
 import random
 
@@ -20,7 +20,7 @@ class Title(arcade.View):
         self.leaderboard = []
 
         # Load the title image
-        self.title_image = arcade.load_texture("assets/TitleMenu-title.png")
+        self.title_image = arcade.load_texture("assets/images/game/menus/TitleMenu-title.png")
 
         self.total_coins_collected = 0
 
@@ -49,7 +49,7 @@ class Title(arcade.View):
 
     def load_coin_animation(self):
         """Load the coin animation frames."""
-        sprite_sheet_path = "assets/coin.png"  # Path to the coin sprite sheet
+        sprite_sheet_path = "assets/images/world_assets/coin.png"  # Path to the coin sprite sheet
         frame_width = 32  # Width of each frame
         frame_height = 32  # Height of each frame
         frame_count = 5  # Total number of frames in the sprite sheet
@@ -71,11 +71,11 @@ class Title(arcade.View):
 
         # Load background layers
         for i in range(1, 5):  # Load Background1.png to Background4.png
-            layer = arcade.load_texture(f"assets/background/Background{i}.png")
+            layer = arcade.load_texture(f"assets/images/background/Background{i}.png")
             self.background_layers.append(layer)
 
         # Add the title image as the topmost background layer
-        title_layer = arcade.load_texture("assets/TitleMenu-title.png")
+        title_layer = arcade.load_texture("assets/images/game/menus/TitleMenu-title.png")
         self.background_layers.append(title_layer)
         self.background_speeds.append(0)  # No movement for the title image
         self.background_offsets.append(0)  # Static offset
@@ -190,7 +190,7 @@ class Title(arcade.View):
         """Handle mouse click for the start button."""
         if self.button_center_x - self.button_width / 2 < x < self.button_center_x + self.button_width / 2 and \
            self.button_center_y - self.button_height / 2 < y < self.button_center_y + self.button_width / 2:
-            from game_window import GameWindow
+            from core.game_window import GameWindow
             game_view = GameWindow()
             game_view.setup()
 

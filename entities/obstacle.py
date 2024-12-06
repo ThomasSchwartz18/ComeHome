@@ -6,7 +6,7 @@ class Obstacle(arcade.Sprite):
 
         # Animation textures
         self.textures = []
-        sprite_sheet_path = "assets/obstacle.png"
+        sprite_sheet_path = "assets/images/world_assets/obstacle.png"
         frame_width = 32
         frame_height = 32
         frame_count = 5

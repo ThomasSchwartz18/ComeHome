@@ -1,7 +1,7 @@
 import arcade
 import time
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from utils import draw_parallax_background
+from utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from utils.util import draw_parallax_background
 
 
 class LoadingScreen(arcade.View):
@@ -18,7 +18,7 @@ class LoadingScreen(arcade.View):
         self.background_offsets = [0, 0, 0, 0]  # Track each layer's horizontal offset
 
         # Load the Loading image
-        self.loading_image = arcade.load_texture("assets/Loading.png")
+        self.loading_image = arcade.load_texture("assets/images/game/menus/Loading.png")
 
     def on_show(self):
         """Called when this view is shown."""
@@ -26,7 +26,7 @@ class LoadingScreen(arcade.View):
 
         # Load background layers
         for i in range(1, 5):  # Load Background1.png to Background4.png
-            layer = arcade.load_texture(f"assets/background/Background{i}.png")
+            layer = arcade.load_texture(f"assets/images/background/Background{i}.png")
             self.background_layers.append(layer)
 
         self.loading_start_time = time.time()
@@ -84,14 +84,26 @@ class LoadingScreen(arcade.View):
         try:
             print("Loading assets...")
             # Simulate loading assets (add actual asset loading here)
-            arcade.load_texture("assets/background/Background1.png")
-            arcade.load_texture("assets/background/Background2.png")
-            arcade.load_texture("assets/background/Background3.png")
-            arcade.load_texture("assets/background/Background4.png")
+            arcade.load_texture("assets/images/background/Background1.png")
+            arcade.load_texture("assets/images/background/Background2.png")
+            arcade.load_texture("assets/images/background/Background3.png")
+            arcade.load_texture("assets/images/background/Background4.png")
+            arcade.load_texture("assets/images/characters/jump.png")
+            arcade.load_texture("assets/images/characters/run_side.png")
+            arcade.load_texture("assets/images/characters/run.png")
+            arcade.load_texture("assets/images/game/menus/GameOver.png")
+            arcade.load_texture("assets/images/game/menus/Loading.png")
+            arcade.load_texture("assets/images/game/menus/TitleMenu-title.png")
+            arcade.load_texture("assets/images/game/cursor.png")
+            arcade.load_texture("assets/images/world_assets/tiles/GroundTile_Sprite.png")
+            arcade.load_texture("assets/images/world_assets/coin.png")
+            arcade.load_texture("assets/images/world_assets/lightning_bug.png")
+            arcade.load_texture("assets/images/world_assets/obstacle.png")
             arcade.Sound("assets/sounds/background/forest_noises.wav")
             arcade.Sound("assets/sounds/background/GuitarStrum.wav")
             arcade.Sound("assets/sounds/background/wind.wav")
-            arcade.Sound("assets/sounds/character/running.wav")
+            arcade.Sound("assets/sounds/characters/running.wav")
+            arcade.Sound("assets/sounds/characters/dialogue/Level1_1.wav")
             arcade.Sound("assets/sounds/game_sounds/coin_collection.wav")
             arcade.Sound("assets/sounds/game_sounds/jump.wav")
             print("Assets loaded successfully.")

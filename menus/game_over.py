@@ -1,7 +1,7 @@
 import arcade
 import os
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_RED
-from utils import draw_parallax_background
+from utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_RED
+from utils.util import draw_parallax_background
 
 class GameOver(arcade.View):
     def __init__(self, final_score):
@@ -14,7 +14,7 @@ class GameOver(arcade.View):
         self.background_offsets = [0, 0, 0, 0]  # Track each layer's horizontal offset
 
         # Load the GameOver image
-        self.game_over_image = arcade.load_texture("assets/GameOver.png")
+        self.game_over_image = arcade.load_texture("assets/images/game/menus/GameOver.png")
         
         self.total_coins_collected = 0
         
@@ -29,7 +29,7 @@ class GameOver(arcade.View):
 
     def load_coin_animation(self):
         """Load the coin animation frames."""
-        sprite_sheet_path = "assets/coin.png"  # Path to the coin sprite sheet
+        sprite_sheet_path = "assets/images/world_assets/coin.png"  # Path to the coin sprite sheet
         frame_width = 32  # Width of each frame
         frame_height = 32  # Height of each frame
         frame_count = 5  # Total number of frames in the sprite sheet
@@ -52,7 +52,7 @@ class GameOver(arcade.View):
 
         # Load background layers
         for i in range(1, 5):  # Load Background1.png to Background4.png
-            layer = arcade.load_texture(f"assets/background/Background{i}.png")
+            layer = arcade.load_texture(f"assets/images/background/Background{i}.png")
             self.background_layers.append(layer)
 
         # Load total coins collected

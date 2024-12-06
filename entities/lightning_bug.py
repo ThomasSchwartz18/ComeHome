@@ -1,11 +1,11 @@
 import random
 import math
 import arcade
-from utils import AnimatedSprite
+from utils.util import AnimatedSprite
 
 class LightningBug(AnimatedSprite):
     def __init__(self, x, y, scale=0.5):
-        sprite_sheet_path = "assets/world_assets/lightning_bug.png"
+        sprite_sheet_path = "assets/images/world_assets/lightning_bug.png"
         super().__init__(
             sprite_sheet_path=sprite_sheet_path,
             frame_width=32,

@@ -1,11 +1,11 @@
 import math
-from utils import AnimatedSprite
+from utils.util import AnimatedSprite
 
 class Coin(AnimatedSprite):
     def __init__(self, x, y):
         # Initialize the AnimatedSprite with the coin sprite sheet
         super().__init__(
-            sprite_sheet_path="assets/coin.png",
+            sprite_sheet_path="assets/images/world_assets/coin.png",
             frame_width=32,
             frame_height=32,
             frame_count=5,

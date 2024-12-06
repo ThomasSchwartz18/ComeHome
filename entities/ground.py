@@ -1,7 +1,7 @@
 import arcade
 import random
-from constants import GROUND_HEIGHT, SCREEN_WIDTH
-from utils import AnimatedSprite
+from utils.constants import GROUND_HEIGHT, SCREEN_WIDTH
+from utils.util import AnimatedSprite
 
 
 class GroundTile(AnimatedSprite):
@@ -28,7 +28,7 @@ class Ground:
         self.tiles = arcade.SpriteList()
 
         # Path to the ground tile sprite sheet
-        sprite_sheet_path = "assets/tiles/GroundTile_Sprite.png"
+        sprite_sheet_path = "assets/images/world_assets/tiles/GroundTile_Sprite.png"
 
         # Tile dimensions
         self.tile_width = 64
