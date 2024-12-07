@@ -366,8 +366,10 @@ class GameWindow(arcade.View):
                 self.running_sound_playing = False
 
             # Add the current score to the scores list and save it
-            rounded_score = round(self.score)
-            self.scores.append(rounded_score)
+            if self.score not in self.scores and round(self.score) not in self.scores:
+                rounded_score = round(self.score)
+                self.scores.append(rounded_score)
+
             self.scores.sort(reverse=True)  # Sort scores in descending order
             self.save_scores()
 
@@ -395,25 +397,42 @@ class GameWindow(arcade.View):
         """Load the scores from a file."""
         try:
             with open("game_watcher/scores.txt", "r") as file:
-                self.scores = [int(line.strip()) for line in file.readlines()]
+                self.scores = []
+                for line in file:
+                    stripped_line = line.strip()
+                    if stripped_line:  # Skip empty lines
+                        try:
+                            score = round(float(stripped_line))  # Handle floats gracefully
+                            self.scores.append(score)
+                        except ValueError:
+                            print(f"Skipping invalid score: {stripped_line}")
         except FileNotFoundError:
             self.scores = []  # Start with an empty list if the file doesn't exist
             print("No scores file found. Starting fresh.")
         except Exception as e:
             print(f"Error loading scores: {e}")
-            self.scores = []
 
     def save_scores(self):
         """Save the scores to a file."""
         try:
             os.makedirs("game_watcher", exist_ok=True)  # Ensure the directory exists
+
+            # Sanitize scores to ensure only rounded integers are written
+            self.scores = [round(score) for score in self.scores]
+            self.scores = sorted(set(self.scores), reverse=True)  # Sort and remove duplicates
+
+            # Write scores to file
             with open("game_watcher/scores.txt", "w") as file:
                 for score in self.scores:
                     file.write(f"{score}\n")
-            # print("Scores saved successfully.")
+                
+                # Remove the last score if there are more than 1 score
+                if len(self.scores) > 1:
+                    self.scores.pop()  # Remove the last score
+                
+            print("Scores saved successfully.")
         except Exception as e:
             print(f"Error saving scores: {e}")
-
 
     ################################################################################################
     # Utility Functions

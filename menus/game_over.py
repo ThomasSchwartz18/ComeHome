@@ -64,12 +64,20 @@ class GameOver(arcade.View):
 
     def save_score(self):
         """Save the player's score to a file."""
-        if not os.path.exists("scores.txt"):
-            with open("scores.txt", "w") as file:
-                file.write(f"{self.final_score}\n")
+        # Ensure the game_watcher directory exists
+        os.makedirs("game_watcher", exist_ok=True)
+
+        # Convert the score to an integer
+        final_score_int = round(self.final_score)
+
+        # Write the score to the scores.txt file
+        if not os.path.exists("game_watcher/scores.txt"):
+            with open("game_watcher/scores.txt", "w") as file:
+                file.write(f"{final_score_int}\n")
         else:
-            with open("scores.txt", "a") as file:
-                file.write(f"{self.final_score}\n")
+            with open("game_watcher/scores.txt", "a") as file:
+                file.write(f"{final_score_int}\n")
+
 
     def on_draw(self):
         """Render the Game Over screen."""
