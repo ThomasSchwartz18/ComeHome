@@ -4,7 +4,7 @@ from utils.util import BackgroundMusicManager
 
 class ComeHomeGame(arcade.Window):
     def __init__(self):
-        super().__init__(800, 600, "ComeHome")
+        super().__init__(1200, 800, "ComeHome")
         
         # Set up custom cursor
         self.set_mouse_visible(False)

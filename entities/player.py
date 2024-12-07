@@ -7,22 +7,27 @@ class Player(arcade.Sprite):
 
         # Running animation textures
         self.running_textures = []
-        self.running_frame_count = 8  # Total frames in the running animation
-        self.running_frame_width = 150  # Width of each frame
-        self.running_frame_height = 149  # Height of each frame
+        self.running_frame_count = 8
+        self.running_frame_width = 150
+        self.running_frame_height = 149
         self.current_frame = 0
 
         # Jumping animation textures
         self.jumping_textures = []
-        self.jumping_frame_count = 2  # Total frames in the jump animation
-        self.jumping_frame_width = 150  # Width of each jump frame
-        self.jumping_frame_height = 149  # Height of each jump frame
+        self.jumping_frame_count = 2
+        self.jumping_frame_width = 150
+        self.jumping_frame_height = 149
 
-        # Load the running animation frames
+        # Idle animation textures
+        self.idle_textures = []
+        self.idle_frame_count = 4  # Total frames in the idle animation
+        self.idle_frame_width = 150
+        self.idle_frame_height = 149
+
+        # Load the animations
         self.load_running_textures("assets/images/characters/run_side.png")
-
-        # Load the jumping animation frames
         self.load_jumping_textures("assets/images/characters/jump.png")
+        self.load_idle_textures("assets/images/characters/Idle.png")
 
         # Set the initial texture
         self.texture = self.running_textures[0]  # Default to running animation
@@ -31,8 +36,11 @@ class Player(arcade.Sprite):
         self.animation_speed = 0.08  # Seconds per frame
         self.time_since_last_frame = 0
 
+        # Animation state
+        self.current_animation = "running"  # Can be "running", "jumping", or "idle"
+
         # Set up player position and scaling
-        self.scale = 1  # Scale the sprite for better visibility
+        self.scale = 1
         self.center_x = PLAYER_START_X
         self.center_y = PLAYER_START_Y
         self.change_y = 0
@@ -50,41 +58,40 @@ class Player(arcade.Sprite):
         """Load textures for the running animation."""
         for i in range(self.running_frame_count):
             x = i * self.running_frame_width
-            try:
-                frame = arcade.load_texture(
-                    sprite_sheet_path,
-                    x=x,
-                    y=0,
-                    width=self.running_frame_width,
-                    height=self.running_frame_height,
-                )
-                self.running_textures.append(frame)
-            except Exception as e:
-                print(f"Error loading running frame {i}: {e}")
-
-        if not self.running_textures:
-            print(f"ERROR: No running frames loaded. Check path: {sprite_sheet_path}.")
-            raise FileNotFoundError("Running sprite sheet could not be loaded.")
+            frame = arcade.load_texture(
+                sprite_sheet_path,
+                x=x,
+                y=0,
+                width=self.running_frame_width,
+                height=self.running_frame_height,
+            )
+            self.running_textures.append(frame)
 
     def load_jumping_textures(self, sprite_sheet_path):
         """Load textures for the jumping animation."""
         for i in range(self.jumping_frame_count):
             x = i * self.jumping_frame_width
-            try:
-                frame = arcade.load_texture(
-                    sprite_sheet_path,
-                    x=x,
-                    y=0,
-                    width=self.jumping_frame_width,
-                    height=self.jumping_frame_height,
-                )
-                self.jumping_textures.append(frame)
-            except Exception as e:
-                print(f"Error loading jumping frame {i}: {e}")
+            frame = arcade.load_texture(
+                sprite_sheet_path,
+                x=x,
+                y=0,
+                width=self.jumping_frame_width,
+                height=self.jumping_frame_height,
+            )
+            self.jumping_textures.append(frame)
 
-        if not self.jumping_textures:
-            print(f"ERROR: No jumping frames loaded. Check path: {sprite_sheet_path}.")
-            raise FileNotFoundError("Jumping sprite sheet could not be loaded.")
+    def load_idle_textures(self, sprite_sheet_path):
+        """Load textures for the idle animation."""
+        for i in range(self.idle_frame_count):
+            x = i * self.idle_frame_width
+            frame = arcade.load_texture(
+                sprite_sheet_path,
+                x=x,
+                y=0,
+                width=self.idle_frame_width,
+                height=self.idle_frame_height,
+            )
+            self.idle_textures.append(frame)
 
     def update(self):
         """Update the player's position with gravity."""
@@ -110,26 +117,31 @@ class Player(arcade.Sprite):
         """Update the animation based on elapsed time."""
         self.time_since_last_frame += delta_time
 
-        # Determine whether to use running or jumping animation
-        if self.center_y > GROUND_HEIGHT:
+        if self.current_animation == "jumping":
             # Use jumping animation when in the air
             if self.time_since_last_frame > self.animation_speed:
                 self.time_since_last_frame = 0
                 self.current_frame = (self.current_frame + 1) % len(self.jumping_textures)
                 self.texture = self.jumping_textures[self.current_frame]
+        elif self.current_animation == "idle":
+            # Use idle animation when idle
+            if self.time_since_last_frame > self.animation_speed:
+                self.time_since_last_frame = 0
+                self.current_frame = (self.current_frame + 1) % len(self.idle_textures)
+                self.texture = self.idle_textures[self.current_frame]
         else:
-            # Use running animation when on the ground
+            # Default to running animation
             if self.time_since_last_frame > self.animation_speed:
                 self.time_since_last_frame = 0
                 self.current_frame = (self.current_frame + 1) % len(self.running_textures)
                 self.texture = self.running_textures[self.current_frame]
 
         # Play or stop the running sound based on movement
-        if self.center_y == GROUND_HEIGHT and self.change_x != 0:  # Player is running on the ground
+        if self.current_animation == "running" and self.change_x != 0:
             if not self.running_sound_playing:
                 self.running_sound.play(loop=True)
                 self.running_sound_playing = True
-        else:  # Stop the sound if jumping or idle
+        else:
             if self.running_sound_playing:
                 self.running_sound_playing = False
 

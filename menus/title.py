@@ -111,15 +111,22 @@ class Title(arcade.View):
             SCREEN_HEIGHT,  # Height of the window
             self.title_image,
         )
-        
+
         # Check if the mouse is hovering over the Freeplay button
-        is_hovering = (
+        is_hovering_freeplay = (
             self.button_center_x - self.button_width / 2 < self.mouse_x < self.button_center_x + self.button_width / 2 and
             self.button_center_y - self.button_height / 2 < self.mouse_y < self.button_center_y + self.button_height / 2
         )
 
-        # Set button color based on hover state
-        button_color = arcade.color.DARK_RED if is_hovering else GAME_RED
+        # Check if the mouse is hovering over the Story button
+        is_hovering_story = (
+            self.button_center_x - self.button_width / 2 < self.mouse_x < self.button_center_x + self.button_width / 2 and
+            self.button_center_y - 100 - self.button_height / 2 < self.mouse_y < self.button_center_y - 100 + self.button_height / 2
+        )
+
+        # Set button colors based on hover state
+        freeplay_button_color = arcade.color.DARK_RED if is_hovering_freeplay else GAME_RED
+        story_button_color = arcade.color.DARK_RED if is_hovering_story else GAME_RED
 
         # Draw Freeplay Button
         arcade.draw_rectangle_filled(
@@ -127,9 +134,8 @@ class Title(arcade.View):
             self.button_center_y,
             self.button_width,
             self.button_height,
-            button_color,
+            freeplay_button_color,
         )
-        
         arcade.draw_text(
             "Freeplay",
             self.button_center_x,
@@ -139,7 +145,25 @@ class Title(arcade.View):
             anchor_x="center",
             anchor_y="center",
         )
-        
+
+        # Draw Story Button
+        arcade.draw_rectangle_filled(
+            self.button_center_x,
+            self.button_center_y - 100,  # Adjust position
+            self.button_width,
+            self.button_height,
+            story_button_color,
+        )
+        arcade.draw_text(
+            "Story",
+            self.button_center_x,
+            self.button_center_y - 100,  # Adjust position
+            arcade.color.BLACK,
+            font_size=20,
+            anchor_x="center",
+            anchor_y="center",
+        )
+
         # Draw leaderboard title
         arcade.draw_text(
             "Leaderboard:",
@@ -159,7 +183,6 @@ class Title(arcade.View):
                 anchor_x="center",
             )
 
-
         # Draw total coins collected with animated coin
         coin_x = SCREEN_WIDTH / 15
         coin_y = SCREEN_HEIGHT - 45
@@ -174,6 +197,7 @@ class Title(arcade.View):
             font_size=25,
             anchor_x="left",
         )
+
 
     def on_update(self, delta_time):
         """Update the background scrolling."""
@@ -196,6 +220,14 @@ class Title(arcade.View):
 
             # Transition to the game view
             self.window.show_view(game_view)
+        
+            # Check if the Story button is clicked
+        if self.button_center_x - self.button_width / 2 < x < self.button_center_x + self.button_width / 2 and \
+        self.button_center_y - 100 - self.button_height / 2 < y < self.button_center_y - 100 + self.button_height / 2:
+            from story.story_mode import StoryMode
+            story_view = StoryMode()
+            story_view.setup()
+            self.window.show_view(story_view)
     
     def load_scores(self):
         """Load the leaderboard scores from a file."""
